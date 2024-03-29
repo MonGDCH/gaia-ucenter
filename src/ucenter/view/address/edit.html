@@ -1,0 +1,88 @@
+<?php $this->layout('page'); ?>
+
+<div class="layui-card page-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="" method="post">
+            <input type="hidden" name="idx" value="<?=$data['id']?>">
+            <input type="hidden" name="uid" value="<?=$data['uid']?>">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">收件人姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="name" lay-verify="required" value="<?=$data['name']?>" lay-verType="tips"
+                        class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">收件人号码</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="mobile" lay-verify="required|phone" value="<?=$data['mobile']?>"
+                        lay-verType="tips" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">省份城市</label>
+                <div class="layui-input-block">
+                    <input type="text" name="pca" id="pca">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">邮政编码</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="pcode" value="<?=$data['pcode']?>" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">详细地址</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" name="address" maxLength="250" lay-verify="required"
+                        lay-verType="tips"><?=$data['address']?></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item layer-footer hidden">
+                <div class="layui-input-block text-left">
+                    <button class="layui-btn layui-btn-sm layui-btn-success" lay-submit
+                        lay-filter="submit">确认提交</button>
+                    <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<?php $this->block('js'); ?>
+<script>
+
+    layui.use(['mForm', 'cascader'], function () {
+        const mForm = layui.mForm
+        const cascader = layui.cascader
+        const pacValue = "<?=$data['pca']?>".split(',')
+
+        let pca = cascader({
+            elem: '#pca',
+            options: JSON.parse('<?=$region?>'),
+            separator: ' ',
+            value: pacValue,
+            props: {
+                value: 'name',
+                label: 'name',
+                children: 'children',
+                strictMode: true,
+            }
+        })
+
+        // 渲染表单
+        mForm.render()
+        mForm.submit('submit', null, null, (data) => {
+            let value = pca.getCheckedValues()
+            return { pca: value.join(',') }
+        })
+    })
+</script>
+<?php $this->blockEnd(); ?>

@@ -1,0 +1,79 @@
+<?php $this->layout('page'); ?>
+
+<div class="layui-card">
+    <div class="layui-card-body m-card-body">
+        <!-- 表格 -->
+        <table id="table" lay-filter="table"></table>
+    </div>
+</div>
+
+<!-- 表格操作栏 -->
+<script type="text/html" id="toolbar">
+    <?= $this->build_toolbar('/ucenter/user/address', $uid, ['add']); ?>
+</script>
+
+<!-- 操作 -->
+<script type="text/html" id="operate">
+    <div class="oper-btns">
+        <?php if($this->checkAuth('/ucenter/user/address/edit', $uid)): ?>
+        <button type="button" class="layui-btn layui-btn-success layui-btn-xs" lay-event="edit">编辑</button>
+        <?php endif; ?>
+
+        <?php if($this->checkAuth('/ucenter/user/address/toggle', $uid)): ?>
+        <!-- {{# if(d.status == '1'){ }} -->
+        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" data-idx="{{ d.id }}" data-url="<?=$this->url('/ucenter/user/address/toggle')?>" data-title="确认禁用该地址么？" data-status="0" lay-event="confirm">禁用</button>
+        <!-- {{# }else{ }} -->
+        <button type="button" class="layui-btn layui-btn-warm layui-btn-xs" data-idx="{{ d.id }}" data-url="<?=$this->url('/ucenter/user/address/toggle')?>" data-title="确认恢复该地址么？" data-status="1" lay-event="confirm">恢复</button>
+        <!-- {{# } }} -->
+        <?php endif; ?>
+    </div>
+</script>
+
+
+<?php $this->block('js'); ?>
+<script>
+    layui.use(['mTable', 'mForm', 'common'], function () {
+        const mTable = layui.mTable
+        const mForm = layui.mForm
+        const common = layui.common
+
+        // 渲染搜索表单
+        mForm.render()
+        // 渲染表格
+        mTable.render({
+            elem: '#table',
+            url: "<?=$this->url('/ucenter/user/address', ['uid' => $user_id])?>" + '&isApi=1',
+            cols: [[
+                { field: 'id', title: 'ID', width: 80, align: 'center' },
+                { field: 'name', title: '收件人', width: 80, align: 'center' },
+                { field: 'mobile', title: '手机号码', width: 120, align: 'center' },
+                { field: 'pca', title: '省份城市', width: 160 },
+                { field: 'address', title: '详细地址', minWidth: 200 },
+                { field: 'pcode', title: '邮政编码', width: 90, align: 'center' },
+                { field: 'status', title: '状态', width: 80, align: 'center', templet: (d) => { return mTable.format.status(d.status) } },
+                { field: 'operate', fixed: 'right', title: '操作', templet: '#operate', width: 140, align: 'center' }
+            ]]
+        })
+        // 绑定表格事件
+        mTable.bindEvent('table', {
+            // toolbar事件
+            toolbar: {
+                // 新增
+                add: {
+                    url: "<?=$this->url('/ucenter/user/address/add', ['uid' => $user_id])?>",
+                    title: '新增地址',
+                    dialog: true
+                },
+            },
+            tool: {
+                // 编辑
+                edit: {
+                    url: "<?=$this->url('/ucenter/user/address/edit')?>",
+                    title: '编辑地址',
+                    dialog: true
+                },
+            }
+        })
+    })
+</script>
+<?php $this->blockEnd(); ?>

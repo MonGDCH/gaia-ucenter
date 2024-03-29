@@ -1,0 +1,112 @@
+<?php $this->layout('page'); ?>
+
+<div class="layui-card page-card">
+    <div class="layui-card-body">
+        <table class="layui-table" lay-skin="line">
+            <colgroup>
+                <col width="150">
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>资产类型</th>
+                    <th>可用</th>
+                    <th>冻结</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>积分</td>
+                    <td>
+                        <?=$data['score']?>
+                    </td>
+                    <td>
+                        <?=$data['freeze_score']?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>余额</td>
+                    <td>
+                        <?=$data['amount']?>
+                    </td>
+                    <td>
+                        <?=$data['freeze_amount']?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <fieldset style="text-align: center;" class="layui-elem-field layui-field-title">
+            <legend style="font-size: 16px;">资产操作</legend>
+        </fieldset>
+
+        <form class="layui-form" action="" method="post">
+            <input type="hidden" name="uid" value="<?=$data['id']?>">
+            <div class="layui-form-item">
+                <label class="layui-form-label">操作类型</label>
+                <div class="layui-input-block">
+                    <?= $this->build_radios('type', $opType, key($opType), [], true); ?>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">资产类型</label>
+                <div class="layui-input-inline">
+                    <?php echo $this->build_select('cate', $cate, [], [], true);?>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">资产属性</label>
+                <div class="layui-input-inline">
+                    <?= $this->build_radios('usable', $attrType, key($attrType), [], true); ?>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">操作数量</label>
+                <div class="layui-input-inline">
+                    <input type="number" lay-affix="number" name="amount" value="0" min="0" lay-verify="required|number"
+                        lay-verType="tips" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注信息</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" name="remark" maxlength="250"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item layer-footer hidden">
+                <div class="layui-input-block text-left">
+                    <button class="layui-btn layui-btn-sm layui-btn-success" lay-submit
+                        lay-filter="submit">确认提交</button>
+                    <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<?php $this->block('css'); ?>
+<style>
+    .charge-container {
+        margin-top: 20px;
+        padding: 10px 0;
+    }
+</style>
+<?php $this->blockEnd(); ?>
+
+
+<?php $this->block('js'); ?>
+<script>
+    layui.use(['mForm'], function () {
+        const mForm = layui.mForm
+        // 渲染表单
+        mForm.render()
+        mForm.submit('submit')
+    })
+</script>
+<?php $this->blockEnd(); ?>

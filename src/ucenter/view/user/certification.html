@@ -1,0 +1,321 @@
+<?php $this->layout('page'); ?>
+
+<div class="layui-card mon-action-container">
+    <div class="layui-card-body">
+        <form class="layui-form" action="" method="post">
+            <input type="hidden" name="uid" id="uid" value="<?=$data['uid']?>">
+
+            <div class="mon-form-item">
+                <label class="mon-form-label">认证类型</label>
+                <div class="mon-form-input">
+                    <?php if($isEdit): ?>
+                    <?= $this->build_radios('type', $type, $data['type'], ['lay-filter' => 'type'], true); ?>
+                    <?php else: ?>
+                    <input type="text" value="<?=$typeTitle?>" readonly class="layui-input">
+                    <input type="hidden" name="type" value="<?=$data['type']?>">
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="mon-form-item">
+                <label class="mon-form-label">真实姓名/企业名称</label>
+                <div class="mon-form-input">
+                    <input type="text" name="name" lay-verify="required" lay-verType="tips" value="<?=$data['name']?>"
+                        class="layui-input" <?=$isEdit ? '' : 'readonly' ?>>
+                </div>
+            </div>
+            <div class="mon-form-item">
+                <label class="mon-form-label">身份证号码/营业执照号码</label>
+                <div class="mon-form-input">
+                    <input type="text" name="identity" lay-verify="required" lay-verType="tips"
+                        value="<?=$data['identity']?>" class="layui-input" <?=$isEdit ? '' : 'readonly' ?>>
+                </div>
+            </div>
+            <div class="mon-form-item">
+                <label class="mon-form-label">联系人姓名</label>
+                <div class="mon-form-input">
+                    <input type="text" name="person" lay-verify="required" lay-verType="tips"
+                        value="<?=$data['person']?>" class="layui-input" <?=$isEdit ? '' : 'readonly' ?>>
+                </div>
+            </div>
+            <div class="mon-form-item">
+                <label class="mon-form-label">联系人电话</label>
+                <div class="mon-form-input">
+                    <input type="text" name="mobile" lay-verify="required|phone" lay-verType="tips"
+                        value="<?=$data['mobile']?>" class="layui-input" <?=$isEdit ? '' : 'readonly' ?>>
+                </div>
+            </div>
+            <div class="mon-form-item">
+                <label class="mon-form-label">联系人邮箱</label>
+                <div class="mon-form-input">
+                    <input type="text" name="email" lay-verify="required|email" lay-verType="tips"
+                        value="<?=$data['email']?>" class="layui-input" <?=$isEdit ? '' : 'readonly' ; ?>>
+                </div>
+            </div>
+            <div class="mon-form-item hidden" id="person">
+                <div class="mon-form-input" style="display: flex;">
+                    <input type="hidden" name="paper_front" id="paper_front_value" value="<?=$data['paper_front']?>">
+                    <div style="width: 200px; margin-right: 20px;">
+                        <label class="mon-form-label">身份证正面照</label>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" lay-on="img-preview" data-title="身份证正面照" id="paper_front_img"
+                                style="width: 100%; height: 120px;">
+                        </div>
+                        <?php if($isEdit): ?>
+                        <div>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm"
+                                id="upload_paper_front">上传证件照</button>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <input type="hidden" name="paper_back" id="paper_back_value" value="<?=$data['paper_back']?>">
+                    <div style="width: 200px; margin-right: 20px;">
+                        <label class="mon-form-label">身份证反面照</label>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" lay-on="img-preview" data-title="身份证反面照" id="paper_back_img"
+                                style="width: 100%; height: 120px;">
+                        </div>
+                        <?php if($isEdit): ?>
+                        <div>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm"
+                                id="upload_paper_back">上传证件照</button>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <input type="hidden" name="paper_hand" id="paper_hand_value" value="<?=$data['paper_hand']?>">
+                    <div style="width: 200px;">
+                        <label class="mon-form-label">手持身份证照</label>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" lay-on="img-preview" data-title="手持身份证照" id="paper_hand_img"
+                                style="width: 100%; height: 120px;">
+                        </div>
+                        <?php if($isEdit): ?>
+                        <div>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm"
+                                id="upload_paper_hand">上传证件照</button>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="mon-form-item hidden" id="company">
+                <label class="mon-form-label">营业执照</label>
+                <div class="mon-form-input">
+                    <input type="hidden" name="license" id="license_value" value="<?=$data['license']?>">
+                    <div style="width: 200px;">
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" lay-on="img-preview" data-title="营业执照" id="license_img"
+                                style="width: 100%; height: 120px;">
+                        </div>
+                        <?php if($isEdit): ?>
+                        <div>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm"
+                                id="upload_license">上传证件照</button>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <?php if($data['status'] == 0): ?>
+            <div class="mon-form-item">
+                <label class="mon-form-label">备注</label>
+                <div class="mon-form-input">
+                    <textarea class="layui-textarea" name="comment" id="comment" maxLength="250"
+                        placeholder="备注信息"><?=$data['comment']?></textarea>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="layui-form-item layer-footer hidden">
+                <div class="layui-input-block text-left">
+                    <?php if($data['status'] == 0): ?>
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-success" lay-on="check"
+                        data-status="1">通 过</button>
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" lay-on="check"
+                        data-status="2">拒 绝</button>
+                    <?php endif; ?>
+
+                    <?php if($isEdit): ?>
+                    <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="submit">保 存</button>
+                    <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary">重 置</button>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<?php $this->block('js'); ?>
+<script>
+    layui.use(['mForm', 'mUpload', 'util', 'http'], function () {
+        const mForm = layui.mForm
+        const mUpload = layui.mUpload
+        const util = layui.util
+        const http = layui.http
+        // 渲染表单
+        mForm.render()
+        mForm.submit('submit')
+
+        util.on('lay-on', {
+            'check': function () {
+                let status = this.dataset.status
+                let uid = document.querySelector('#uid').value
+                let comment = document.querySelector('#comment').value
+
+                http.ajax({
+                    url: "<?=$this->url('/ucenter/user/certification/check')?>",
+                    method: 'POST',
+                    data: { uid, status, comment }
+                }).then(ret => {
+                    if (ret.code != '1') {
+                        return layer.msg(ret.msg, { icon: 2 })
+                    }
+
+                    // 存在iframe，操作iframe
+                    if (parent !== self) {
+                        parent.document.querySelectorAll('.layui-table-tool [lay-event="refresh"]').forEach(el => {
+                            el.click()
+                        })
+
+                        // 关闭弹层
+                        let i = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(i);
+                    }
+
+                    parent.layer.msg(ret.msg, { icon: 1 })
+                })
+            }
+        })
+
+        // 认证类型
+        mForm.callback((form) => {
+            // 初始化认证类型
+            let formData = form.val()
+            renderType(formData.type)
+
+            // 切换认证类型
+            form.on('radio(type)', function (data) {
+                let value = data.elem.value;
+                renderType(value)
+            });
+
+            // 渲染认证类型
+            function renderType(type) {
+                switch (type) {
+                    case '1':
+                        document.querySelector('#company').classList.remove('hidden')
+                        document.querySelector('#person').classList.add('hidden')
+                        break;
+                    case '0':
+                        document.querySelector('#company').classList.add('hidden')
+                        document.querySelector('#person').classList.remove('hidden')
+                        break;
+                }
+            }
+        })
+
+        // 身份证正面照
+        let paper_front_value = document.querySelector('#paper_front_value').value
+        if (paper_front_value) {
+            document.querySelector('#paper_front_img').src = paper_front_value
+        }
+        mUpload.render({
+            elem: '#upload_paper_front',
+            url: "<?= $this->url('/upload') ?>",
+            accept: 'images',
+            done: function (ret, index, upload) {
+                if (ret.code != '1') {
+                    layer.msg(ret.msg, { icon: 2 });
+                    return;
+                }
+                let url = ret.data[0].url
+                document.querySelector('#paper_front_value').value = url
+                document.querySelector('#paper_front_img').src = url
+            },
+        })
+        // 身份证反面照
+        let paper_back_value = document.querySelector('#paper_back_value').value
+        if (paper_back_value) {
+            document.querySelector('#paper_back_img').src = paper_back_value
+        }
+        mUpload.render({
+            elem: '#upload_paper_back',
+            url: "<?= $this->url('/upload') ?>",
+            accept: 'images',
+            done: function (ret, index, upload) {
+                if (ret.code != '1') {
+                    layer.msg(ret.msg, { icon: 2 });
+                    return;
+                }
+                let url = ret.data[0].url
+                document.querySelector('#paper_back_value').value = url
+                document.querySelector('#paper_back_img').src = url
+            },
+        })
+        // 手持身份证照
+        let paper_hand_value = document.querySelector('#paper_hand_value').value
+        if (paper_hand_value) {
+            document.querySelector('#paper_hand_img').src = paper_hand_value
+        }
+        mUpload.render({
+            elem: '#upload_paper_hand',
+            url: "<?= $this->url('/upload') ?>",
+            accept: 'images',
+            done: function (ret, index, upload) {
+                if (ret.code != '1') {
+                    layer.msg(ret.msg, { icon: 2 });
+                    return;
+                }
+                let url = ret.data[0].url
+                document.querySelector('#paper_hand_value').value = url
+                document.querySelector('#paper_hand_img').src = url
+            },
+        })
+
+        // 营业执照
+        let license_value = document.querySelector('#license_value').value
+        if (license_value) {
+            document.querySelector('#license_img').src = license_value
+        }
+        mUpload.render({
+            elem: '#upload_license',
+            url: "<?= $this->url('/upload') ?>",
+            accept: 'images',
+            done: function (ret, index, upload) {
+                if (ret.code != '1') {
+                    layer.msg(ret.msg, { icon: 2 });
+                    return;
+                }
+                let url = ret.data[0].url
+                document.querySelector('#license_value').value = url
+                document.querySelector('#license_img').src = url
+            },
+        })
+
+        // 预览
+        document.querySelectorAll('.preview').forEach((el) => {
+            el.addEventListener('click', function () {
+                let src = this.src
+                let title = this.dataset.title
+                if (src) {
+                    layer.photos({
+                        photos: {
+                            title: title,
+                            id: 0,
+                            data: [{
+                                pid: 1,
+                                alt: title,
+                                src: src,
+                                thumb: src
+                            }]
+                        },
+                    });
+                }
+            })
+        })
+    })
+</script>
+<?php $this->blockEnd(); ?>

@@ -1,0 +1,89 @@
+<?php $this->layout('page'); ?>
+
+<!-- 搜索 -->
+<div class="search-panel" id="search-form">
+    <form class="layui-form" lay-filter="search">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户</label>
+            <div class="layui-input-block">
+                <div id="user-select"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作时间：</label>
+            <div class="layui-input-block">
+                <input type="text" name="create_time" placeholder="搜索操作时间" class="layui-input date-range"
+                    autocomplete="off">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="layui-card">
+    <div class="layui-card-body m-card-body">
+        <!-- 表格 -->
+        <table id="table" lay-filter="table"></table>
+    </div>
+</div>
+
+<script type="text/html" id="toolbar">
+    <?= $this->build_toolbar('/ucenter/log/login', $uid, ['search', 'reset']); ?>
+</script>
+
+<?php $this->block('js'); ?>
+<script>
+    layui.use(['util', 'mTable', 'mForm', 'common', 'userSelect'], function () {
+        const util = layui.util
+        const mTable = layui.mTable
+        const mForm = layui.mForm
+        const common = layui.common
+        const userSelect = layui.userSelect
+
+        // 搜索用户
+        const searchUser = userSelect.render('#user-select', "<?=$this->url('/ucenter/getUser')?>")
+        // 渲染搜索表单
+        mForm.render()
+        // 渲染表格
+        mTable.render({
+            elem: '#table',
+            url: "<?=$this->url('/ucenter/log/login')?>" + '?isApi=1',
+            cols: [[
+                { title: 'ID', field: 'id', width: 80, align: 'center' },
+                { title: '用户', field: 'uid', width: 160, align: 'center', templet: d => `<a lay-on="user-tips" class="mon-link" data-mobile="${d.mobile}" data-email="${d.email}" data-uid="${d.uid}">${d.nickname}</a>` },
+                { title: '操作', field: 'action', width: 200, align: 'left' },
+                { title: '操作地址', field: 'ip', width: 136, align: 'center' },
+                { title: '操作时间', field: 'create_time', width: 168, align: 'center', templet: d => common.date('Y-m-d H:i:s', d.create_time) },
+                { title: '浏览器', field: 'ua', minWidth: 200, align: 'left' },
+            ]]
+        })
+        // 绑定表格事件
+        mTable.bindEvent('table', {
+            toolbar: {
+                // 搜索按钮
+                search: function (data, reset) {
+                    // 重置
+                    if (reset) {
+                        searchUser.setValue([])
+                        return data
+                    }
+                    if (data.create_time) {
+                        let iCreate = data.create_time.split(' - ')
+                        data.start_time = common.strtotime(iCreate[0] + ' 00:00:00')
+                        data.end_time = common.strtotime(iCreate[1] + ' 23:59:59')
+                    }
+
+                    return data
+                },
+            }
+        })
+        // 详情查看
+        util.on('lay-on', {
+            'user-tips': function () {
+                let data = this.dataset
+                let tips = `用户ID：${data.uid} <br/> 手机号：${data.mobile} <br/> 邮 箱：${data.email}`
+                layer.tips(tips, this, { tips: 1, time: 2000 })
+            },
+        })
+    })
+</script>
+<?php $this->blockEnd(); ?>

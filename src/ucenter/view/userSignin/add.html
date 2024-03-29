@@ -1,0 +1,46 @@
+<?php $this->layout('page'); ?>
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="" method="post">
+            <!-- <input type="hidden" name="round_ids" value=""> -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户</label>
+                <div class="layui-input-block">
+                    <div id="user-select"></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">签到日期</label>
+                <div class="layui-input-block">
+                    <input type="text" name="day" lay-verify="required" lay-verType="tips" lay-reqText="请选择签到日期"
+                        class="layui-input date" placeholder="签到日期">
+                </div>
+            </div>
+
+            <div class="layui-form-item layer-footer hidden">
+                <div class="layui-input-block text-left">
+                    <button class="layui-btn layui-btn-sm layui-btn-success" lay-submit
+                        lay-filter="submit">确认提交</button>
+                    <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?php $this->block('js'); ?>
+<script>
+    layui.use(['laydate', 'mForm', 'userSelect'], function () {
+        const laydate = layui.laydate
+        const mForm = layui.mForm
+        const userSelect = layui.userSelect
+        // 用户选择
+        userSelect.render('#user-select', "<?=$this->url('/ucenter/getUser')?>")
+        // 渲染表单
+        mForm.render()
+        mForm.submit('submit')
+    })
+</script>
+<?php $this->blockEnd(); ?>

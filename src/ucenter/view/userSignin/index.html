@@ -1,0 +1,110 @@
+<?php $this->layout('page'); ?>
+
+<!-- 搜索 -->
+<div class="search-panel" id="search-form">
+    <form class="layui-form" lay-filter="search">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户</label>
+            <div class="layui-input-block">
+                <div id="user-select"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">签到日期</label>
+            <div class="layui-input-block">
+                <input type="text" name="day" class="layui-input date" placeholder="签到日期">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">签到时间：</label>
+            <div class="layui-input-block">
+                <input type="text" name="create_time" placeholder="搜索签到时间" class="layui-input date-range"
+                    autocomplete="off">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="layui-card">
+    <div class="layui-card-body m-card-body">
+        <!-- 表格 -->
+        <table id="table" lay-filter="table"></table>
+    </div>
+</div>
+
+<script type="text/html" id="toolbar">
+    <?= $this->build_toolbar('/ucenter/signin', $uid, ['add', 'search', 'reset']); ?>
+    <?php if($this->checkAuth('/ucenter/signin/config', $uid)): ?>
+    <button class="layui-btn layui-btn-sm layui-btn-normal btn-edit" lay-event="config">
+        <i class="layui-icon layui-icon-edit"></i> 签到配置
+    </button>
+    <?php endif; ?>
+</script>
+
+<?php $this->block('js'); ?>
+<script>
+    layui.use(['util', 'action', 'mTable', 'mForm', 'common', 'userSelect'], function () {
+        const util = layui.util
+        const action = layui.action
+        const mTable = layui.mTable
+        const mForm = layui.mForm
+        const common = layui.common
+        const userSelect = layui.userSelect
+
+        // 搜索用户
+        const searchUser = userSelect.render('#user-select', "<?=$this->url('/ucenter/getUser')?>")
+        // 渲染搜索表单
+        mForm.render()
+        // 渲染表格
+        mTable.render({
+            elem: '#table',
+            url: "<?=$this->url('/ucenter/signin')?>" + '?isApi=1',
+            cols: [[
+                { title: 'ID', field: 'id', width: 80, align: 'center' },
+                { title: '用户', field: 'uid', width: 160, align: 'center', templet: d => `<a lay-on="user-tips" class="mon-link" data-mobile="${d.mobile}" data-email="${d.email}" data-uid="${d.uid}">${d.nickname}</a>` },
+                { title: '签到日期', field: 'day', width: 160, align: 'center' },
+                { title: '签到积分', field: 'score', width: 140, align: 'center' },
+                { title: '签到时间', field: 'create_time', minWidth: 168, align: 'center', templet: d => mTable.format.dateTime(d.create_time) },
+            ]]
+        })
+        // 绑定表格事件
+        mTable.bindEvent('table', {
+            toolbar: {
+                // 新增
+                add: {
+                    url: "<?=$this->url('/ucenter/signin/add')?>",
+                    title: '新增用户签到记录',
+                    dialog: true
+                },
+                // 搜索按钮
+                search: function (data, reset) {
+                    // 重置
+                    if (reset) {
+                        searchUser.setValue([])
+                        return data
+                    }
+                    if (data.create_time) {
+                        let iCreate = data.create_time.split(' - ')
+                        data.start_time = common.strtotime(iCreate[0] + ' 00:00:00')
+                        data.end_time = common.strtotime(iCreate[1] + ' 23:59:59')
+                    }
+
+                    return data
+                },
+                config: function (data) {
+                    const url = "<?=$this->url('/ucenter/signin/config')?>"
+                    action.dialog(url, '签到配置')
+                }
+            }
+        })
+        // 详情查看
+        util.on('lay-on', {
+            'user-tips': function () {
+                let data = this.dataset
+                let tips = `用户ID：${data.uid} <br/> 手机号：${data.mobile} <br/> 邮 箱：${data.email}`
+                layer.tips(tips, this, { tips: 1, time: 2000 })
+            },
+        })
+    })
+</script>
+<?php $this->blockEnd(); ?>
