@@ -8,7 +8,7 @@ use Throwable;
 use mon\log\Logger;
 use mon\thinkOrm\Dao;
 use mon\util\Instance;
-use app\admin\dao\AdminLogDao;
+use plugins\admin\dao\AdminLogDao;
 
 /**
  * 用户签到Dao操作

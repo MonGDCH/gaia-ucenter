@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace plugins\ucenter\controller;
 
 use mon\http\Request;
-use support\http\Controller;
+use plugins\admin\comm\Controller;
 use plugins\ucenter\dao\UserLogDao;
 use plugins\ucenter\contract\AssetsEnum;
 use plugins\ucenter\dao\UserLoginLogDao;

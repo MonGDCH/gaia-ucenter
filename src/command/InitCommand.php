@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace gaia\admin\command;
+namespace gaia\ucenter\command;
 
 use Throwable;
 use mon\util\Sql;
@@ -51,13 +51,13 @@ class InitCommand extends Command
      * @var array
      */
     protected $menu = [
-        ['name'  => 'ucenter', 'title' => '会员中心', 'icon'  => 'layui-icon layui-icon-group', 'chilid' => [
+        ['name'  => 'ucenter', 'title' => '会员中心', 'icon'  => 'layui-icon layui-icon-user', 'chilid' => [
             ['name'  => 'userLog', 'title' => '用户日志', 'icon'  => 'layui-icon layui-icon-list', 'chilid' => [
                 ['name'  => '/ucenter/log/login', 'title' => '登录日志', 'icon'  => 'layui-icon layui-icon-template-1'],
                 ['name'  => '/ucenter/log/operate', 'title' => '操作日志', 'icon'  => 'layui-icon layui-icon-template-1'],
                 ['name'  => '/ucenter/log/assets', 'title' => '资产流水', 'icon'  => 'layui-icon layui-icon-template-1']
             ]],
-            ['name'  => '/ucenter/user', 'title' => '用户管理', 'icon'  => 'layui-icon layui-icon-user'],
+            ['name'  => '/ucenter/user', 'title' => '用户管理', 'icon'  => 'layui-icon layui-icon-username'],
             ['name'  => '/ucenter/signin', 'title' => '积分签到', 'icon'  => 'layui-icon layui-icon-face-smile-fine']
         ]],
     ];

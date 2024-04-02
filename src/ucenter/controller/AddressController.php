@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace plugins\ucenter\controller;
 
 use mon\http\Request;
-use app\admin\dao\RegionDao;
-use support\http\Controller;
+use plugins\admin\dao\RegionDao;
+use plugins\admin\comm\Controller;
 use plugins\ucenter\dao\UserAddressDao;
 
 /**

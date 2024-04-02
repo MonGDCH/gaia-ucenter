@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace plugins\ucenter\controller;
 
+use mon\env\Config;
 use mon\http\Request;
-use support\http\Controller;
-use app\admin\service\DictService;
+use plugins\admin\comm\Controller;
+use plugins\admin\service\DictService;
 use plugins\ucenter\dao\UserSigninDao;
-use plugins\ucenter\contract\UserSigninEnum;
 
 /**
  * 用户签到管理
@@ -61,39 +61,34 @@ class SigninController extends Controller
     }
 
     /**
-     * 签到配置
+     * 查看签到配置
      *
      * @param Request $request
      * @return mixed
      */
     public function config(Request $request)
     {
-        if ($request->isPost()) {
-            $day = $request->post('day', 0);
-            $week = $request->post('week', 0);
-            if (!check('int', $day) || $day < 0) {
-                return $this->error('每日签到参数错误');
-            }
-            if (!check('int', $week) || $week < 0) {
-                return $this->error('每周签到参数错误');
-            }
+        // if ($request->isPost()) {
+        //     $day = $request->post('day', 0);
+        //     $week = $request->post('week', 0);
+        //     if (!check('int', $day) || $day < 0) {
+        //         return $this->error('每日签到参数错误');
+        //     }
+        //     if (!check('int', $week) || $week < 0) {
+        //         return $this->error('每周签到参数错误');
+        //     }
 
-            // 修改配置字典数据
-            $dictData = [
-                UserSigninEnum::CONFIG_KEY => [
-                    UserSigninEnum::CONFIG_DAY_GIFT_KEY => $day,
-                    UserSigninEnum::CONFIG_WEEK_GIFT_KEY => $week,
-                ]
-            ];
-            $save = DictService::instance()->edit($dictData, $request->uid, true, 'ucenter');
-            if (!$save) {
-                return $this->error(DictService::instance()->getError());
-            }
+        //     // 修改配置字典数据
+        //     $dictData = [];
+        //     $save = DictService::instance()->edit($dictData, $request->uid, true, 'ucenter');
+        //     if (!$save) {
+        //         return $this->error(DictService::instance()->getError());
+        //     }
 
-            return $this->success('操作成功');
-        }
+        //     return $this->success('操作成功');
+        // }
 
-        $config = DictService::instance()->get(UserSigninEnum::CONFIG_KEY, '', []);
+        $config = Config::instance()->get('ucenter.app.sign', []);
         return $this->fetch('userSignin/config', ['config' => $config]);
     }
 }

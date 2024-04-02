@@ -7,7 +7,7 @@
                 <label class="layui-form-label">每日签到</label>
                 <div class="layui-input-inline">
                     <input type="number" lay-affix="number" name="day" value="<?=$config['day']?>" step="1" min="0"
-                        lay-verify="required|int" lay-verType="tips" class="layui-input">
+                        lay-verify="required|int" disabled lay-verType="tips" class="layui-input">
                 </div>
             </div>
 
@@ -15,28 +15,28 @@
                 <label class="layui-form-label">每周签到</label>
                 <div class="layui-input-inline">
                     <input type="number" lay-affix="number" name="week" value="<?=$config['week']?>" step="1" min="0"
-                        lay-verify="required|int" lay-verType="tips" class="layui-input">
+                        lay-verify="required|int" disabled lay-verType="tips" class="layui-input">
                 </div>
             </div>
 
-            <div class="layui-form-item layer-footer hidden">
+            <!-- <div class="layui-form-item layer-footer hidden">
                 <div class="layui-input-block text-left">
                     <button class="layui-btn layui-btn-sm layui-btn-success" lay-submit
                         lay-filter="submit">确认提交</button>
                     <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary">重置</button>
                 </div>
-            </div>
+            </div> -->
         </form>
     </div>
 </div>
 
 <?php $this->block('js'); ?>
 <script>
-    layui.use(['mForm'], function () {
-        const mForm = layui.mForm
-        // 渲染表单
-        mForm.render()
-        mForm.submit('submit')
-    })
+    // layui.use(['mForm'], function () {
+    //     const mForm = layui.mForm
+    //     // 渲染表单
+    //     mForm.render()
+    //     mForm.submit('submit')
+    // })
 </script>
 <?php $this->blockEnd(); ?>

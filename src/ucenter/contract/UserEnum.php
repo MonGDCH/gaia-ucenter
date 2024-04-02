@@ -13,20 +13,6 @@ namespace plugins\ucenter\contract;
 interface UserEnum
 {
     /**
-     * 用户中心注册配置字典
-     * 
-     * @var string
-     */
-    const REGISTER_DICT = 'ucenter_register';
-
-    /**
-     * 用户中心登录配置字典
-     * 
-     * @var string
-     */
-    const LOGIN_DICT = 'ucenter_login';
-
-    /**
      * 用户会员等级
      * 
      * @var array

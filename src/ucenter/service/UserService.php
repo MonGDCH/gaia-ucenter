@@ -6,13 +6,15 @@ namespace plugins\ucenter\service;
 
 use Throwable;
 use mon\util\Date;
+use mon\util\Spids;
+use mon\env\Config;
 use mon\log\Logger;
+use mon\util\Common;
 use think\facade\Db;
 use mon\util\Instance;
-use mon\util\InviteCode;
-use app\admin\dao\AdminLogDao;
+use InvalidArgumentException;
 use plugins\ucenter\dao\UserDao;
-use app\admin\service\DictService;
+use plugins\admin\dao\AdminLogDao;
 use plugins\ucenter\dao\UserLogDao;
 use plugins\ucenter\dao\UserSigninDao;
 use plugins\ucenter\contract\UserEnum;
@@ -21,7 +23,6 @@ use plugins\ucenter\contract\AssetsEnum;
 use plugins\ucenter\dao\UserAssetsLogDao;
 use plugins\ucenter\contract\UserLogEnum;
 use plugins\ucenter\validate\UserValidate;
-use plugins\ucenter\contract\UserSigninEnum;
 use plugins\ucenter\dao\UserCertificationDao;
 use plugins\ucenter\contract\CertificationEnum;
 use plugins\ucenter\validate\CertificationValidate;
@@ -58,10 +59,10 @@ class UserService
             return 0;
         }
         // 注册配置
-        $registerConfig = DictService::instance()->get(UserEnum::REGISTER_DICT, '', []);
+        $registerConfig = Config::instance()->get('ucenter.app.register');
         // 注册数据
         $registerData = [
-            'nickname' => $data['nickname'] ?: ($registerConfig['add_nickname_prefix'] ?: '') . randString(),
+            'nickname' => $data['nickname'] ?: ($registerConfig['user_prefix'] ?: '') . Common::instance()->randString(),
             'avatar' => $data['avatar'] ?: ($registerConfig['add_avatar'] ?: ''),
             'level' => $data['level'] ?: ($registerConfig['add_level'] ?: 0),
             'sex' => $data['sex'] ?: 0,
@@ -204,9 +205,9 @@ class UserService
             $this->error = '用户名密码错误';
             // 记录登录错误日志
             UserLoginLogDao::instance()->record([
-                'uid'       => $userInfo['id'],
-                'type'      => UserLogEnum::LOGIN_LOG_TYPE['pwd_faild'],
-                'action'    => $this->error
+                'uid' => $userInfo['id'],
+                'type' => UserLogEnum::LOGIN_LOG_TYPE['pwd_faild'],
+                'action' => $this->error
             ]);
             return [];
         }
@@ -411,13 +412,11 @@ class UserService
             $this->error = '用户当日已签到';
             return false;
         }
-        // 配置信息
-        $config = DictService::instance()->get(UserSigninEnum::CONFIG_KEY, '', []);
         // 签到积分
-        $dayScore = $config[UserSigninEnum::CONFIG_DAY_GIFT_KEY];
+        $dayScore = Config::instance()->get('ucenter.sign.day', 5);
         $weekScore = 0;
         // 存在周签到积分奖励且今天为周天，判断是否连续签到一周
-        if ($config['week'] > 0 && $date->getWeek() == 0) {
+        if (Config::instance()->get('ucenter.sign.week', 0) > 0 && $date->getWeek() == 0) {
             $week_start = $date->getWeekDay();
             $week_start_time = strtotime($week_start);
             $days = [$week_start];
@@ -430,7 +429,7 @@ class UserService
             $count = UserSigninDao::instance()->where('uid', $uid)->whereIn('day', $days)->count();
             if ($count == 6) {
                 // 全部有签到，增加获取的积分
-                $weekScore = $config[UserSigninEnum::CONFIG_WEEK_GIFT_KEY];
+                $weekScore = Config::instance()->get('ucenter.sign.week', 15);
             }
         }
 
@@ -519,7 +518,7 @@ class UserService
      */
     public function checkDisableAccount(int $uid): bool
     {
-        $config = DictService::instance()->get(UserEnum::LOGIN_DICT, '', []);
+        $config = Config::instance()->get('ucenter.login');
         $start_time = time() - (60 * $config['login_gap']);
         $count = UserLoginLogDao::instance()->where('uid', $uid)->where('create_time', '>=', $start_time)
             ->where('type', '>', UserLogEnum::LOGIN_LOG_TYPE['success'])
@@ -536,7 +535,7 @@ class UserService
      */
     public function checkDisableIP(string $ip): bool
     {
-        $config = DictService::instance()->get(UserEnum::LOGIN_DICT, '', []);
+        $config = Config::instance()->get('ucenter.login');
         $start_time = time() - ($config['login_gap'] * 60);
         $count = UserLoginLogDao::instance()->where('create_time', '>=', $start_time)->where('ip', $ip)
             ->where('type', '>', UserLogEnum::LOGIN_LOG_TYPE['success'])
@@ -553,7 +552,7 @@ class UserService
      */
     public function encodeInvite(int $uid): string
     {
-        return InviteCode::instance()->encode($uid);
+        return Spids::instance()->encode([$uid]);
     }
 
     /**
@@ -564,7 +563,11 @@ class UserService
      */
     public function decodeInvite(string $code): int
     {
-        return InviteCode::instance()->decode($code);
+        $data = Spids::instance()->decode($code);
+        if (!$data) {
+            throw new InvalidArgumentException('邀请码不正确');
+        }
+        return intval($data[0]);
     }
 
     /**
@@ -576,7 +579,7 @@ class UserService
      */
     public function encodeLoginToken($value, string $ip = ''): string
     {
-        return md5(randString() . $ip . time() . $value);
+        return md5(mt_rand(0, 9999) . $ip . time() . $value);
     }
 
     /**

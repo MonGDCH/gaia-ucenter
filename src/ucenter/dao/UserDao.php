@@ -9,7 +9,7 @@ use mon\log\Logger;
 use mon\util\Common;
 use mon\thinkOrm\Dao;
 use mon\util\Instance;
-use app\admin\dao\AdminLogDao;
+use plugins\admin\dao\AdminLogDao;
 use plugins\ucenter\contract\UserEnum;
 use plugins\ucenter\validate\UserValidate;
 

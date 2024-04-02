@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace plugins\ucenter\controller;
 
+use mon\env\Config;
 use mon\http\Request;
-use support\http\Controller;
 use plugins\ucenter\dao\UserDao;
-use app\admin\service\DictService;
+use plugins\admin\comm\Controller;
 use plugins\ucenter\contract\UserEnum;
 use plugins\ucenter\contract\AssetsEnum;
 use plugins\ucenter\service\AssetsService;
@@ -85,7 +85,7 @@ class UserController extends Controller
             return $this->success('操作成功');
         }
 
-        $config = DictService::instance()->get(UserEnum::REGISTER_DICT, '', []);
+        $config = Config::instance()->get('ucenter.app.register');
         return $this->fetch('user/add', [
             'sex' => UserEnum::USER_SEX_TITLE,
             'level' => UserEnum::USER_LEVEL_TITLE,
@@ -130,7 +130,7 @@ class UserController extends Controller
             return $this->success('操作成功');
         }
 
-        $config = DictService::instance()->get(UserEnum::REGISTER_DICT, '', []);
+        $config = Config::instance()->get('ucenter.app.register');
         return $this->fetch('user/edit', [
             'data' => $info,
             'sex' => UserEnum::USER_SEX_TITLE,
