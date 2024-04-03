@@ -6,7 +6,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">每日签到</label>
                 <div class="layui-input-inline">
-                    <input type="number" lay-affix="number" name="day" value="<?=$config['day']?>" step="1" min="0"
+                    <input type="number" lay-affix="number" lay-precision="0" name="day" value="<?=$config['day']?>" step="1" min="0"
                         lay-verify="required|int" disabled lay-verType="tips" class="layui-input">
                 </div>
             </div>
@@ -14,7 +14,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">每周签到</label>
                 <div class="layui-input-inline">
-                    <input type="number" lay-affix="number" name="week" value="<?=$config['week']?>" step="1" min="0"
+                    <input type="number" lay-affix="number" lay-precision="0" name="week" value="<?=$config['week']?>" step="1" min="0"
                         lay-verify="required|int" disabled lay-verType="tips" class="layui-input">
                 </div>
             </div>

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "mongdch/gaia-admin",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MonGDCH/gaia-admin.git",
-                "reference": "fb905ff779ab25957c667afbac12da2579009a5c"
+                "reference": "393f5f9eaa715e61482d80faf09edbadce7310f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/gaia-admin/zipball/fb905ff779ab25957c667afbac12da2579009a5c",
-                "reference": "fb905ff779ab25957c667afbac12da2579009a5c",
+                "url": "https://api.github.com/repos/MonGDCH/gaia-admin/zipball/393f5f9eaa715e61482d80faf09edbadce7310f6",
+                "reference": "393f5f9eaa715e61482d80faf09edbadce7310f6",
                 "shasum": ""
             },
             "require": {
@@ -57,9 +57,9 @@
             ],
             "support": {
                 "issues": "https://github.com/MonGDCH/gaia-admin/issues",
-                "source": "https://github.com/MonGDCH/gaia-admin/tree/1.0.0"
+                "source": "https://github.com/MonGDCH/gaia-admin/tree/1.0.1"
             },
-            "time": "2024-03-29T02:39:05+00:00"
+            "time": "2024-04-03T06:32:57+00:00"
         },
         {
             "name": "mongdch/mon-auth-think",
